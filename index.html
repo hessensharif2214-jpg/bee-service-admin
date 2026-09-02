@@ -14,16 +14,15 @@
 
     <style>
         :root {
-            /* Android Dark Honeycomb Palette */
-            --bg: #0f0e0c;          /* Deep dark Android background */
-            --card: #191815;        /* Dark card surface */
-            --card-border: #2e281f; /* Subtle warm border */
-            --text: #f5f2eb;        /* Soft white text */
-            --accent: #f5a623;      /* Hive Gold / Honey Accent */
-            --accent-hover: #d98e19;/* Pressed state */
-            --danger: #ff5252;      /* Material Red */
-            --meta-text: #a09585;   /* Warm muted gray/brown */
-            --input-bg: #23201a;    /* Surface input container */
+            --bg: #0f0e0c;
+            --card: #191815;
+            --card-border: #2e281f;
+            --text: #f5f2eb;
+            --accent: #f5a623;
+            --accent-hover: #d98e19;
+            --danger: #ff5252;
+            --meta-text: #a09585;
+            --input-bg: #23201a;
         }
 
         * {
@@ -51,7 +50,6 @@
             padding-bottom: 32px;
         }
 
-        /* Android Material Top Bar */
         header {
             display: flex;
             justify-content: space-between;
@@ -84,7 +82,6 @@
             color: var(--text);
         }
 
-        /* Material Android Button */
         button {
             background-color: var(--accent);
             color: #0d0c0a;
@@ -121,7 +118,6 @@
             background-color: rgba(255, 82, 82, 0.1);
         }
 
-        /* Android Card Containers */
         .admin-box {
             background: var(--card);
             padding: 18px;
@@ -158,7 +154,7 @@
 
         .password-wrapper input {
             margin: 0;
-            padding-left: 40px; /* Space for toggle button */
+            padding-left: 40px;
         }
 
         .toggle-password-btn {
@@ -199,7 +195,6 @@
             cursor: pointer;
         }
 
-        /* Android Material Inputs */
         input, textarea {
             width: 100%;
             padding: 10px 14px;
@@ -224,7 +219,6 @@
             cursor: pointer;
         }
 
-        /* Style date/time picker icon for WebKit browsers */
         input[type="datetime-local"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8) sepia(1) saturate(5) hue-rotate(350deg);
             cursor: pointer;
@@ -313,27 +307,24 @@
 <div class="container">
     <header>
         <div class="header-left">
-            <img src="Gemini_Generated_Image_m9ale3m9ale3m9al.png" alt="Bee Logo" class="header-logo">
-            <h1>تحديثات عمليات  </h1>
+            <img src="Gemini_Generated_Image_m9ale3m9ale3m9al.png" alt="Bee Logo" class="header-logo" onerror="this.style.display='none'">
+            <h1>تحديثات عمليات</h1>
         </div>
         <div class="controls">
-            <button id="auth-btn" type="button" onclick="toggleLoginForm()">تسجيل الدخول</button>
+            <button id="auth-btn" type="button" onclick="window.toggleLoginForm()">تسجيل الدخول</button>
         </div>
     </header>
 
-    <div id="success-message">تم تسجيل الدخول بنجاح لصفحة التحديثات ل حسين شريف شكري شريف</div>
+    <div id="success-message">✅ تم تسجيل الدخول بنجاح</div>
 
-    <!-- Wrapping inside a form enables browser password suggestion/autofill memory -->
     <div id="login-box" class="admin-box">
-        <h3>تسجيل الدخول</h3>
-        <form id="login-form" onsubmit="handleLogin(event)">
-            <!-- Hidden username field to trigger standard browser credential saving -->
+        <h3>🔐 تسجيل الدخول</h3>
+        <form id="login-form" onsubmit="window.handleLogin(event)">
             <input type="text" name="username" value="user" autocomplete="username" style="display:none;">
-            
             <div class="login-row">
                 <div class="password-wrapper">
                     <input type="password" id="password-input" name="password" placeholder="أدخل كلمة المرور" autocomplete="current-password">
-                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()" aria-label="عرض كلمة المرور">
+                    <button type="button" class="toggle-password-btn" onclick="window.togglePasswordVisibility()" aria-label="عرض كلمة المرور">
                         <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                             <circle cx="12" cy="12" r="3"></circle>
@@ -347,285 +338,323 @@
                 <span>تذكرني (حفظ كلمة المرور)</span>
             </label>
         </form>
-        <div id="error-msg" class="error-msg">كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.</div>
+        <div id="error-msg" class="error-msg">❌ كلمة المرور غير صحيحة</div>
     </div>
 
     <div id="publish-panel" class="admin-box">
-        <h3>نشر خبر جديد</h3>
+        <h3>📢 نشر خبر جديد</h3>
         <input type="text" id="news-title" placeholder="عنوان الخبر">
         <textarea id="news-content" rows="4" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
         
-        <label class="input-label" for="news-media">إرفاق صورة أو ملف (اختياري - تخزين Supabase Storage):</label>
+        <label class="input-label" for="news-media">🖼️ إرفاق صورة (اختياري - تخزين Supabase):</label>
         <input type="file" id="news-media" accept="image/*">
 
-        <label class="input-label" for="news-date">تاريخ ووقت النشر (اختياري - يترك فارغاً للنشر الآن):</label>
+        <label class="input-label" for="news-date">📅 تاريخ ووقت النشر (اختياري):</label>
         <input type="datetime-local" id="news-date">
 
-        <button type="button" id="publish-btn" onclick="publishNews()">نشر الخبر</button>
+        <button type="button" id="publish-btn" onclick="window.publishNews()">نشر الخبر</button>
     </div>
 
     <div id="news-feed"></div>
 </div>
 
 <script>
-    // Supabase Configuration Initialization
-    const SUPABASE_URL = "https://tzjaizzqlepqimqccdvo.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6amFpenpxbGVwcWltcWNjZHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDA5MjQsImV4cCI6MjEwMjk3NjkyNH0.cYZt0irAOz4mDFO3gI4bDkLmgbM4ndO8xnP6pR2ayO8";
-    const BUCKET_NAME = "uploads"; // Bucket configured in Supabase Storage
+    (function() {
+        // ---- Supabase Configuration ----
+        const SUPABASE_URL = "https://tzjaizzqlepqimqccdvo.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6amFpenpxbGVwcWltcWNjZHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDA5MjQsImV4cCI6MjEwMjk3NjkyNH0.cYZt0irAOz4mDFO3gI4bDkLmgbM4ndO8xnP6pR2ayO8";
+        const BUCKET_NAME = "uploads";
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Create Supabase client - using a different variable name to avoid conflicts
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const USER_PASSWORD = "hessen451827+"; 
-    const ADMIN_PASSWORD = "adminhessen451827hh"; 
+        // ---- Passwords ----
+        const USER_PASSWORD = "hessen451827+";
+        const ADMIN_PASSWORD = "adminhessen451827hh";
 
-    let isLoggedIn = false;
-    let isAdmin = false;
+        let isLoggedIn = false;
+        let isAdmin = false;
 
-    document.addEventListener("DOMContentLoaded", () => {
-        checkSavedLogin();
-        renderNews();
-    });
-
-    function checkSavedLogin() {
-        const savedPass = localStorage.getItem("saved_password");
-        if (savedPass) {
-            document.getElementById("remember-me").checked = true;
-            document.getElementById("password-input").value = savedPass;
-            authenticatePassword(savedPass, true);
+        // ---- Helper: escape HTML ----
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>"']/g, match => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[match]);
         }
-    }
 
-    function togglePasswordVisibility() {
-        const passwordInput = document.getElementById("password-input");
-        const eyeIcon = document.getElementById("eye-icon");
+        // ---- Toggle password visibility ----
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("password-input");
+            const eyeIcon = document.getElementById("eye-icon");
+            if (!passwordInput || !eyeIcon) return;
 
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            eyeIcon.innerHTML = `
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                <line x1="1" y1="1" x2="23" y2="23"></line>
-            `;
-        } else {
-            passwordInput.type = "password";
-            eyeIcon.innerHTML = `
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-            `;
-        }
-    }
-
-    function toggleLoginForm() {
-        if (isLoggedIn) {
-            // Logout logic
-            isLoggedIn = false;
-            isAdmin = false;
-            
-            // Check if user has "remember-me" enabled
-            const rememberMe = document.getElementById("remember-me").checked;
-            if (!rememberMe) {
-                localStorage.removeItem("saved_password");
-                document.getElementById("password-input").value = "";
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
             } else {
-                // Keep password in input field if Remember Me was selected for quick re-entry
+                passwordInput.type = "password";
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        }
+
+        // ---- Toggle Login / Logout ----
+        function toggleLoginForm() {
+            if (isLoggedIn) {
+                // Logout
+                isLoggedIn = false;
+                isAdmin = false;
+
+                const rememberMe = document.getElementById("remember-me")?.checked;
+                if (!rememberMe) {
+                    localStorage.removeItem("saved_password");
+                    document.getElementById("password-input").value = "";
+                } else {
+                    const saved = localStorage.getItem("saved_password");
+                    if (saved) document.getElementById("password-input").value = saved;
+                }
+
+                document.getElementById("auth-btn").innerText = "تسجيل الدخول";
+                document.getElementById("publish-panel").classList.remove("active");
+                document.getElementById("login-box").classList.remove("active");
+                document.getElementById("success-message").style.display = "none";
+                renderNews();
+            } else {
+                const loginBox = document.getElementById("login-box");
+                loginBox.classList.toggle("active");
+                document.getElementById("error-msg").style.display = "none";
+
                 const savedPass = localStorage.getItem("saved_password");
                 if (savedPass) {
+                    document.getElementById("remember-me").checked = true;
                     document.getElementById("password-input").value = savedPass;
                 }
+
+                if (loginBox.classList.contains("active")) {
+                    setTimeout(() => document.getElementById("password-input").focus(), 100);
+                }
             }
+        }
 
-            document.getElementById("auth-btn").innerText = "تسجيل الدخول";
-            document.getElementById("publish-panel").classList.remove("active");
-            document.getElementById("login-box").classList.remove("active");
-            document.getElementById("success-message").style.display = "none";
-            renderNews();
-        } else {
-            // Show/hide login input box
-            const loginBox = document.getElementById("login-box");
-            loginBox.classList.toggle("active");
-            document.getElementById("error-msg").style.display = "none";
+        // ---- Handle Login ----
+        function handleLogin(event) {
+            if (event) event.preventDefault();
 
-            // If a saved password exists, pre-populate field for fast quick-open login
+            const inputPass = document.getElementById("password-input").value;
+            const rememberMe = document.getElementById("remember-me").checked;
+
+            if (authenticatePassword(inputPass, false)) {
+                if (rememberMe) {
+                    localStorage.setItem("saved_password", inputPass);
+                } else {
+                    localStorage.removeItem("saved_password");
+                }
+            }
+        }
+
+        // ---- Authenticate ----
+        function authenticatePassword(inputPass, isAutoLogin) {
+            const errorMsg = document.getElementById("error-msg");
+            const successMsg = document.getElementById("success-message");
+
+            if (inputPass === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                isAdmin = true;
+                document.getElementById("auth-btn").innerText = "تسجيل الخروج";
+                document.getElementById("login-box").classList.remove("active");
+                document.getElementById("publish-panel").classList.add("active");
+                errorMsg.style.display = "none";
+                successMsg.style.display = "block";
+                renderNews();
+                return true;
+            } else if (inputPass === USER_PASSWORD) {
+                isLoggedIn = true;
+                isAdmin = false;
+                document.getElementById("auth-btn").innerText = "تسجيل الخروج";
+                document.getElementById("login-box").classList.remove("active");
+                document.getElementById("publish-panel").classList.remove("active");
+                errorMsg.style.display = "none";
+                successMsg.style.display = "block";
+                renderNews();
+                return true;
+            } else {
+                if (!isAutoLogin) {
+                    errorMsg.style.display = "block";
+                    successMsg.style.display = "none";
+                }
+                return false;
+            }
+        }
+
+        // ---- Check saved login ----
+        function checkSavedLogin() {
             const savedPass = localStorage.getItem("saved_password");
             if (savedPass) {
                 document.getElementById("remember-me").checked = true;
                 document.getElementById("password-input").value = savedPass;
-            }
-            
-            if (loginBox.classList.contains("active")) {
-                setTimeout(() => document.getElementById("password-input").focus(), 100);
+                authenticatePassword(savedPass, true);
             }
         }
-    }
 
-    function handleLogin(event) {
-        if (event) event.preventDefault();
+        // ---- Publish News ----
+        async function publishNews() {
+            if (!isAdmin) return;
 
-        const inputPass = document.getElementById("password-input").value;
-        const rememberMe = document.getElementById("remember-me").checked;
-        
-        if (authenticatePassword(inputPass, false)) {
-            if (rememberMe) {
-                // Store password for quick open and browser memory
-                localStorage.setItem("saved_password", inputPass);
+            const titleInput = document.getElementById("news-title");
+            const contentInput = document.getElementById("news-content");
+            const dateInput = document.getElementById("news-date");
+            const mediaInput = document.getElementById("news-media");
+            const publishBtn = document.getElementById("publish-btn");
+
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                alert("يرجى ملء جميع الحقول.");
+                return;
+            }
+
+            publishBtn.innerText = "⏳ جاري النشر...";
+            publishBtn.disabled = true;
+
+            let mediaUrl = null;
+
+            // Upload file if selected
+            if (mediaInput.files.length > 0) {
+                const file = mediaInput.files[0];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}.${fileExt}`;
+                const filePath = `public/${fileName}`;
+
+                try {
+                    const { data, error } = await supabaseClient.storage
+                        .from(BUCKET_NAME)
+                        .upload(filePath, file);
+
+                    if (error) {
+                        console.error("Supabase Upload Error:", error);
+                        alert("⚠️ فشل رفع الملف. تأكد من أن bucket 'uploads' موجود.");
+                    } else {
+                        const { data: publicUrlData } = supabaseClient.storage
+                            .from(BUCKET_NAME)
+                            .getPublicUrl(filePath);
+                        mediaUrl = publicUrlData.publicUrl;
+                    }
+                } catch (err) {
+                    console.error("Upload exception:", err);
+                    alert("⚠️ حدث خطأ أثناء الرفع.");
+                }
+            }
+
+            // Build date string
+            let publishDate;
+            if (dateInput.value) {
+                const d = new Date(dateInput.value);
+                publishDate = d.toLocaleDateString("ar-EG", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
             } else {
-                localStorage.removeItem("saved_password");
+                publishDate = new Date().toLocaleDateString("ar-EG", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
             }
-        }
-    }
 
-    function authenticatePassword(inputPass, isAutoLogin) {
-        const errorMsg = document.getElementById("error-msg");
-        const successMsg = document.getElementById("success-message");
+            // Save to localStorage
+            const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
+            const newArticle = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: publishDate,
+                mediaUrl: mediaUrl
+            };
 
-        if (inputPass === ADMIN_PASSWORD) {
-            isLoggedIn = true;
-            isAdmin = true;
-            document.getElementById("auth-btn").innerText = "تسجيل الخروج";
-            document.getElementById("login-box").classList.remove("active");
-            document.getElementById("publish-panel").classList.add("active");
-            errorMsg.style.display = "none";
-            successMsg.style.display = "block";
+            newsList.unshift(newArticle);
+            localStorage.setItem("newsArticles", JSON.stringify(newsList));
+
+            // Clear form
+            titleInput.value = "";
+            contentInput.value = "";
+            dateInput.value = "";
+            mediaInput.value = "";
+            publishBtn.innerText = "نشر الخبر";
+            publishBtn.disabled = false;
+
             renderNews();
-            return true;
-        } else if (inputPass === USER_PASSWORD) {
-            isLoggedIn = true;
-            isAdmin = false;
-            document.getElementById("auth-btn").innerText = "تسجيل الخروج";
-            document.getElementById("login-box").classList.remove("active");
-            document.getElementById("publish-panel").classList.remove("active");
-            errorMsg.style.display = "none";
-            successMsg.style.display = "block";
-            renderNews();
-            return true;
-        } else {
-            if (!isAutoLogin) {
-                errorMsg.style.display = "block";
-                successMsg.style.display = "none";
-            }
-            return false;
-        }
-    }
-
-    async function publishNews() {
-        if (!isAdmin) return;
-
-        const titleInput = document.getElementById("news-title");
-        const contentInput = document.getElementById("news-content");
-        const dateInput = document.getElementById("news-date");
-        const mediaInput = document.getElementById("news-media");
-        const publishBtn = document.getElementById("publish-btn");
-
-        if (!titleInput.value.trim() || !contentInput.value.trim()) {
-            alert("يرجى ملء جميع الحقول.");
-            return;
         }
 
-        publishBtn.innerText = "جاري النشر...";
-        publishBtn.disabled = true;
+        // ---- Delete News ----
+        function deleteNews(id) {
+            if (!isAdmin) return;
+            if (!confirm("هل أنت متأكد من حذف هذا الخبر؟")) return;
 
-        let mediaUrl = null;
-
-        // Handles upload to Supabase Storage if a file was selected
-        if (mediaInput.files.length > 0) {
-            const file = mediaInput.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-            const filePath = `public/${fileName}`;
-
-            const { data, error } = await supabase.storage
-                .from(BUCKET_NAME)
-                .upload(filePath, file);
-
-            if (error) {
-                console.error("Supabase Storage Upload Error:", error);
-                alert("حدث خطأ أثناء رفع الملف إلى Supabase Storage. تأكد من وجود Bucket باسم 'uploads'.");
-            } else {
-                const { data: publicUrlData } = supabase.storage
-                    .from(BUCKET_NAME)
-                    .getPublicUrl(filePath);
-
-                mediaUrl = publicUrlData.publicUrl;
-            }
-        }
-
-        // Custom selected date or current time
-        let publishDate;
-        if (dateInput.value) {
-            publishDate = new Date(dateInput.value).toLocaleDateString("ar-EG", { 
-                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-            });
-        } else {
-            publishDate = new Date().toLocaleDateString("ar-EG", { 
-                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-            });
-        }
-
-        const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
-        
-        const newArticle = {
-            id: Date.now(),
-            title: titleInput.value,
-            content: contentInput.value,
-            date: publishDate,
-            mediaUrl: mediaUrl
-        };
-
-        newsList.unshift(newArticle);
-        localStorage.setItem("newsArticles", JSON.stringify(newsList));
-
-        titleInput.value = "";
-        contentInput.value = "";
-        dateInput.value = "";
-        mediaInput.value = "";
-        publishBtn.innerText = "نشر الخبر";
-        publishBtn.disabled = false;
-        
-        renderNews();
-    }
-
-    function deleteNews(id) {
-        if (!isAdmin) return;
-
-        if(confirm("هل أنت تأكد من أنك تريد حذف هذا الخبر؟")) {
             let newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
             newsList = newsList.filter(article => article.id !== id);
             localStorage.setItem("newsArticles", JSON.stringify(newsList));
             renderNews();
         }
-    }
 
-    function renderNews() {
-        const feed = document.getElementById("news-feed");
+        // ---- Render News Feed ----
+        function renderNews() {
+            const feed = document.getElementById("news-feed");
+            if (!feed) return;
 
-        // Hide news feed completely if user is not logged in
-        if (!isLoggedIn) {
-            feed.innerHTML = '<div class="empty-state">يرجى تسجيل الدخول لعرض الأخبار.</div>';
-            return;
+            if (!isLoggedIn) {
+                feed.innerHTML = '<div class="empty-state">🔒 يرجى تسجيل الدخول لعرض الأخبار.</div>';
+                return;
+            }
+
+            const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
+
+            if (newsList.length === 0) {
+                feed.innerHTML = '<div class="empty-state">📭 لا توجد أخبار منشورة حتى الآن.</div>';
+                return;
+            }
+
+            feed.innerHTML = newsList.map(article => {
+                const safeTitle = escapeHtml(article.title);
+                const safeContent = escapeHtml(article.content).replace(/\n/g, '<br>');
+                const mediaHtml = article.mediaUrl 
+                    ? `<img src="${escapeHtml(article.mediaUrl)}" alt="صورة الخبر" class="news-media" loading="lazy" onerror="this.style.display='none'">`
+                    : '';
+                const deleteBtn = isAdmin 
+                    ? `<button class="danger" onclick="window.deleteNews(${article.id})">🗑️ حذف</button>`
+                    : '';
+                return `
+                    <article class="news-card">
+                        <h2>${safeTitle}</h2>
+                        <div class="news-meta">📅 ${escapeHtml(article.date)}</div>
+                        ${mediaHtml}
+                        <p>${safeContent}</p>
+                        ${deleteBtn}
+                    </article>
+                `;
+            }).join('');
         }
 
-        const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
+        // ---- Initialize ----
+        document.addEventListener("DOMContentLoaded", function() {
+            checkSavedLogin();
+            renderNews();
+        });
 
-        if (newsList.length === 0) {
-            feed.innerHTML = '<div class="empty-state">لا توجد أخبار منشورة حتى الآن.</div>';
-            return;
-        }
+        // ---- Expose functions to global scope ----
+        window.toggleLoginForm = toggleLoginForm;
+        window.handleLogin = handleLogin;
+        window.togglePasswordVisibility = togglePasswordVisibility;
+        window.publishNews = publishNews;
+        window.deleteNews = deleteNews;
+        window.renderNews = renderNews;
 
-        feed.innerHTML = newsList.map(article => `
-            <article class="news-card">
-                <h2>${escapeHtml(article.title)}</h2>
-                <div class="news-meta">تم النشر في ${article.date}</div>
-                ${article.mediaUrl ? `<img src="${article.mediaUrl}" alt="Attachment" class="news-media">` : ''}
-                <p>${escapeHtml(article.content).replace(/\n/g, '<br>')}</p>
-                ${isAdmin ? `<button class="danger" onclick="deleteNews(${article.id})">حذف</button>` : ''}
-            </article>
-        `).join('');
-    }
-
-    function escapeHtml(text) {
-        return text.replace(/[&<>"']/g, match => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        })[match]);
-    }
+    })(); // End of IIFE
 </script>
 
 </body>
