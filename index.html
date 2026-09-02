@@ -23,6 +23,8 @@
             --danger: #ff5252;
             --meta-text: #a09585;
             --input-bg: #23201a;
+            /* زيادة حجم الخط الأساسي للخبر +1 */
+            --news-font-size: 1.1rem;  /* من 0.95rem إلى 1.1rem */
         }
 
         * {
@@ -76,7 +78,7 @@
         }
 
         h1 {
-            font-size: 2.25rem;
+            font-size: 1.25rem;
             font-weight: 700;
             margin: 0;
             color: var(--text);
@@ -243,13 +245,13 @@
         .news-card h2 {
             margin-top: 0;
             margin-bottom: 6px;
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             color: var(--accent);
             line-height: 1.4;
         }
 
         .news-meta {
-            font-size: 1.8rem;
+            font-size: 0.8rem;
             color: var(--meta-text);
             margin-bottom: 12px;
         }
@@ -257,7 +259,8 @@
         .news-card p {
             margin: 0 0 12px 0;
             line-height: 1.6;
-            font-size: 1.95rem;
+            /* زيادة حجم الخط بمقدار 1 (من 0.95rem إلى 1.1rem) */
+            font-size: var(--news-font-size);
             color: #e0dad0;
         }
 
@@ -308,17 +311,17 @@
     <header>
         <div class="header-left">
             <img src="Gemini_Generated_Image_m9ale3m9ale3m9al.png" alt="Bee Logo" class="header-logo" onerror="this.style.display='none'">
-            <h1>تحديث عمليات</h1>
+            <h1>تحديثات عمليات</h1>
         </div>
         <div class="controls">
             <button id="auth-btn" type="button" onclick="window.toggleLoginForm()">تسجيل الدخول</button>
         </div>
     </header>
 
-    <div id="success-message"> تم تسجيل الدخول بنجاح ل قائمة تحديثات حسين شريف شكري شريف </div>
+    <div id="success-message">✅ تم تسجيل الدخول بنجاح</div>
 
     <div id="login-box" class="admin-box">
-        <h3> تسجيل الدخول</h3>
+        <h3>🔐 تسجيل الدخول</h3>
         <form id="login-form" onsubmit="window.handleLogin(event)">
             <input type="text" name="username" value="user" autocomplete="username" style="display:none;">
             <div class="login-row">
@@ -338,18 +341,18 @@
                 <span>تذكرني (حفظ كلمة المرور)</span>
             </label>
         </form>
-        <div id="error-msg" class="error-msg"> كلمة المرور غير صحيحة</div>
+        <div id="error-msg" class="error-msg">❌ كلمة المرور غير صحيحة</div>
     </div>
 
     <div id="publish-panel" class="admin-box">
-        <h3> نشر خبر جديد</h3>
+        <h3>📢 نشر خبر جديد</h3>
         <input type="text" id="news-title" placeholder="عنوان الخبر">
         <textarea id="news-content" rows="4" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
         
-        <label class="input-label" for="news-media"> إرفاق صورة (اختياري - تخزين Supabase):</label>
+        <label class="input-label" for="news-media">🖼️ إرفاق صورة (اختياري - تخزين Supabase):</label>
         <input type="file" id="news-media" accept="image/*">
 
-        <label class="input-label" for="news-date">تاريخ ووقت النشر (اختياري):</label>
+        <label class="input-label" for="news-date">📅 تاريخ ووقت النشر (اختياري):</label>
         <input type="datetime-local" id="news-date">
 
         <button type="button" id="publish-btn" onclick="window.publishNews()">نشر الخبر</button>
@@ -365,7 +368,7 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6amFpenpxbGVwcWltcWNjZHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDA5MjQsImV4cCI6MjEwMjk3NjkyNH0.cYZt0irAOz4mDFO3gI4bDkLmgbM4ndO8xnP6pR2ayO8";
         const BUCKET_NAME = "uploads";
 
-        // Create Supabase client - using a different variable name to avoid conflicts
+        // Create Supabase client
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ---- Passwords ----
@@ -502,7 +505,7 @@
             }
         }
 
-        // ---- Publish News ----
+        // ---- Publish News (with Supabase sync) ----
         async function publishNews() {
             if (!isAdmin) return;
 
@@ -520,7 +523,7 @@
                 return;
             }
 
-            publishBtn.innerText = " جاري النشر...";
+            publishBtn.innerText = "⏳ جاري النشر...";
             publishBtn.disabled = true;
 
             let mediaUrl = null;
@@ -539,7 +542,7 @@
 
                     if (error) {
                         console.error("Supabase Upload Error:", error);
-                        alert(" فشل رفع الملف. تأكد من أن bucket 'uploads' موجود.");
+                        alert("⚠️ فشل رفع الملف. تأكد من أن bucket 'uploads' موجود.");
                     } else {
                         const { data: publicUrlData } = supabaseClient.storage
                             .from(BUCKET_NAME)
@@ -548,7 +551,7 @@
                     }
                 } catch (err) {
                     console.error("Upload exception:", err);
-                    alert(" حدث خطأ أثناء الرفع.");
+                    alert("⚠️ حدث خطأ أثناء الرفع.");
                 }
             }
 
@@ -567,7 +570,7 @@
                 });
             }
 
-            // Save to localStorage
+            // تخزين في localStorage (محلي)
             const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
             const newArticle = {
                 id: Date.now(),
@@ -580,6 +583,22 @@
             newsList.unshift(newArticle);
             localStorage.setItem("newsArticles", JSON.stringify(newsList));
 
+            // مزامنة مع Supabase (جدول news)
+            try {
+                const { error } = await supabaseClient
+                    .from('news')
+                    .insert([{
+                        id: newArticle.id,
+                        title: title,
+                        content: content,
+                        date: publishDate,
+                        media_url: mediaUrl
+                    }]);
+                if (error) console.error("Supabase insert error:", error);
+            } catch (e) {
+                console.error("Supabase insert exception:", e);
+            }
+
             // Clear form
             titleInput.value = "";
             contentInput.value = "";
@@ -591,14 +610,77 @@
             renderNews();
         }
 
-        // ---- Delete News ----
-        function deleteNews(id) {
+        // ---- Delete News (with Supabase sync) ----
+        async function deleteNews(id) {
             if (!isAdmin) return;
             if (!confirm("هل أنت متأكد من حذف هذا الخبر؟")) return;
 
             let newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
             newsList = newsList.filter(article => article.id !== id);
             localStorage.setItem("newsArticles", JSON.stringify(newsList));
+
+            // حذف من Supabase
+            try {
+                const { error } = await supabaseClient
+                    .from('news')
+                    .delete()
+                    .eq('id', id);
+                if (error) console.error("Supabase delete error:", error);
+            } catch (e) {
+                console.error("Supabase delete exception:", e);
+            }
+
+            renderNews();
+        }
+
+        // ---- تحميل الأخبار من Supabase ودمجها مع localStorage ----
+        async function syncNewsFromSupabase() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('news')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) {
+                    console.error("Supabase select error:", error);
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    // تحويل data إلى صيغة متوافقة مع localStorage
+                    const remoteNews = data.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        content: item.content,
+                        date: item.date,
+                        mediaUrl: item.media_url
+                    }));
+
+                    // دمج مع localStorage (تفادي التكرار)
+                    let localNews = JSON.parse(localStorage.getItem("newsArticles") || "[]");
+                    // إنشاء خريطة بالأخبار المحلية حسب id
+                    const localMap = new Map();
+                    localNews.forEach(article => localMap.set(article.id, article));
+
+                    // إضافة الأخبار البعيدة إن لم تكن موجودة محلياً
+                    remoteNews.forEach(remoteArticle => {
+                        if (!localMap.has(remoteArticle.id)) {
+                            localNews.push(remoteArticle);
+                        } else {
+                            // تحديث المحلي بالبعيد (في حال تغير)
+                            localMap.set(remoteArticle.id, remoteArticle);
+                        }
+                    });
+
+                    // إعادة بناء المصفوفة من الخريطة (لضمان التحديث)
+                    const merged = Array.from(localMap.values());
+                    // ترتيب تنازلي حسب id (الأحدث أولاً)
+                    merged.sort((a, b) => b.id - a.id);
+                    localStorage.setItem("newsArticles", JSON.stringify(merged));
+                }
+            } catch (e) {
+                console.error("Sync error:", e);
+            }
             renderNews();
         }
 
@@ -608,14 +690,14 @@
             if (!feed) return;
 
             if (!isLoggedIn) {
-                feed.innerHTML = '<div class="empty-state"> يرجى تسجيل الدخول لعرض تحديثاتك.</div>';
+                feed.innerHTML = '<div class="empty-state">🔒 يرجى تسجيل الدخول لعرض الأخبار.</div>';
                 return;
             }
 
             const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
 
             if (newsList.length === 0) {
-                feed.innerHTML = '<div class="empty-state"> لا توجد أخبار منشورة حتى الآن.</div>';
+                feed.innerHTML = '<div class="empty-state">📭 لا توجد أخبار منشورة حتى الآن.</div>';
                 return;
             }
 
@@ -631,7 +713,7 @@
                 return `
                     <article class="news-card">
                         <h2>${safeTitle}</h2>
-                        <div class="news-meta"> ${escapeHtml(article.date)}</div>
+                        <div class="news-meta">📅 ${escapeHtml(article.date)}</div>
                         ${mediaHtml}
                         <p>${safeContent}</p>
                         ${deleteBtn}
@@ -641,8 +723,10 @@
         }
 
         // ---- Initialize ----
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", async function() {
             checkSavedLogin();
+            // مزامنة مع Supabase عند التحميل
+            await syncNewsFromSupabase();
             renderNews();
         });
 
@@ -653,6 +737,7 @@
         window.publishNews = publishNews;
         window.deleteNews = deleteNews;
         window.renderNews = renderNews;
+        window.syncNewsFromSupabase = syncNewsFromSupabase;
 
     })(); // End of IIFE
 </script>
