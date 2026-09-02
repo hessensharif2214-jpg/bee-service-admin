@@ -8,6 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
             /* Android Dark Honeycomb Palette */
@@ -215,6 +219,11 @@
             border-color: var(--accent);
         }
 
+        input[type="file"] {
+            padding: 6px;
+            cursor: pointer;
+        }
+
         /* Style date/time picker icon for WebKit browsers */
         input[type="datetime-local"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8) sepia(1) saturate(5) hue-rotate(350deg);
@@ -256,6 +265,15 @@
             line-height: 1.6;
             font-size: 0.95rem;
             color: #e0dad0;
+        }
+
+        .news-media {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--card-border);
         }
 
         .empty-state {
@@ -337,16 +355,26 @@
         <input type="text" id="news-title" placeholder="عنوان الخبر">
         <textarea id="news-content" rows="4" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
         
+        <label class="input-label" for="news-media">إرفاق صورة أو ملف (اختياري - تخزين Supabase Storage):</label>
+        <input type="file" id="news-media" accept="image/*">
+
         <label class="input-label" for="news-date">تاريخ ووقت النشر (اختياري - يترك فارغاً للنشر الآن):</label>
         <input type="datetime-local" id="news-date">
 
-        <button type="button" onclick="publishNews()">نشر الخبر</button>
+        <button type="button" id="publish-btn" onclick="publishNews()">نشر الخبر</button>
     </div>
 
     <div id="news-feed"></div>
 </div>
 
 <script>
+    // Supabase Configuration Initialization
+    const SUPABASE_URL = "https://tzjaizzqlepqimqccdvo.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6amFpenpxbGVwcWltcWNjZHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDA5MjQsImV4cCI6MjEwMjk3NjkyNH0.cYZt0irAOz4mDFO3gI4bDkLmgbM4ndO8xnP6pR2ayO8";
+    const BUCKET_NAME = "uploads"; // Bucket configured in Supabase Storage
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const USER_PASSWORD = "hessen451827+"; 
     const ADMIN_PASSWORD = "adminhessen451827hh"; 
 
@@ -478,16 +506,46 @@
         }
     }
 
-    function publishNews() {
+    async function publishNews() {
         if (!isAdmin) return;
 
         const titleInput = document.getElementById("news-title");
         const contentInput = document.getElementById("news-content");
         const dateInput = document.getElementById("news-date");
+        const mediaInput = document.getElementById("news-media");
+        const publishBtn = document.getElementById("publish-btn");
 
         if (!titleInput.value.trim() || !contentInput.value.trim()) {
             alert("يرجى ملء جميع الحقول.");
             return;
+        }
+
+        publishBtn.innerText = "جاري النشر...";
+        publishBtn.disabled = true;
+
+        let mediaUrl = null;
+
+        // Handles upload to Supabase Storage if a file was selected
+        if (mediaInput.files.length > 0) {
+            const file = mediaInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            const filePath = `public/${fileName}`;
+
+            const { data, error } = await supabase.storage
+                .from(BUCKET_NAME)
+                .upload(filePath, file);
+
+            if (error) {
+                console.error("Supabase Storage Upload Error:", error);
+                alert("حدث خطأ أثناء رفع الملف إلى Supabase Storage. تأكد من وجود Bucket باسم 'uploads'.");
+            } else {
+                const { data: publicUrlData } = supabase.storage
+                    .from(BUCKET_NAME)
+                    .getPublicUrl(filePath);
+
+                mediaUrl = publicUrlData.publicUrl;
+            }
         }
 
         // Custom selected date or current time
@@ -508,7 +566,8 @@
             id: Date.now(),
             title: titleInput.value,
             content: contentInput.value,
-            date: publishDate
+            date: publishDate,
+            mediaUrl: mediaUrl
         };
 
         newsList.unshift(newArticle);
@@ -517,6 +576,10 @@
         titleInput.value = "";
         contentInput.value = "";
         dateInput.value = "";
+        mediaInput.value = "";
+        publishBtn.innerText = "نشر الخبر";
+        publishBtn.disabled = false;
+        
         renderNews();
     }
 
@@ -551,6 +614,7 @@
             <article class="news-card">
                 <h2>${escapeHtml(article.title)}</h2>
                 <div class="news-meta">تم النشر في ${article.date}</div>
+                ${article.mediaUrl ? `<img src="${article.mediaUrl}" alt="Attachment" class="news-media">` : ''}
                 <p>${escapeHtml(article.content).replace(/\n/g, '<br>')}</p>
                 ${isAdmin ? `<button class="danger" onclick="deleteNews(${article.id})">حذف</button>` : ''}
             </article>
