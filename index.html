@@ -23,8 +23,7 @@
             --danger: #ff5252;
             --meta-text: #a09585;
             --input-bg: #23201a;
-            /* زيادة حجم الخط الأساسي للخبر +1 */
-            --news-font-size: 1.1rem;  /* من 0.95rem إلى 1.1rem */
+            --news-font-size: 1.1rem;
         }
 
         * {
@@ -259,7 +258,6 @@
         .news-card p {
             margin: 0 0 12px 0;
             line-height: 1.6;
-            /* زيادة حجم الخط بمقدار 1 (من 0.95rem إلى 1.1rem) */
             font-size: var(--news-font-size);
             color: #e0dad0;
         }
@@ -368,7 +366,6 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6amFpenpxbGVwcWltcWNjZHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDA5MjQsImV4cCI6MjEwMjk3NjkyNH0.cYZt0irAOz4mDFO3gI4bDkLmgbM4ndO8xnP6pR2ayO8";
         const BUCKET_NAME = "uploads";
 
-        // Create Supabase client
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ---- Passwords ----
@@ -378,7 +375,6 @@
         let isLoggedIn = false;
         let isAdmin = false;
 
-        // ---- Helper: escape HTML ----
         function escapeHtml(text) {
             if (!text) return '';
             return text.replace(/[&<>"']/g, match => ({
@@ -386,7 +382,6 @@
             })[match]);
         }
 
-        // ---- Toggle password visibility ----
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById("password-input");
             const eyeIcon = document.getElementById("eye-icon");
@@ -407,10 +402,8 @@
             }
         }
 
-        // ---- Toggle Login / Logout ----
         function toggleLoginForm() {
             if (isLoggedIn) {
-                // Logout
                 isLoggedIn = false;
                 isAdmin = false;
 
@@ -445,7 +438,6 @@
             }
         }
 
-        // ---- Handle Login ----
         function handleLogin(event) {
             if (event) event.preventDefault();
 
@@ -461,7 +453,6 @@
             }
         }
 
-        // ---- Authenticate ----
         function authenticatePassword(inputPass, isAutoLogin) {
             const errorMsg = document.getElementById("error-msg");
             const successMsg = document.getElementById("success-message");
@@ -495,7 +486,6 @@
             }
         }
 
-        // ---- Check saved login ----
         function checkSavedLogin() {
             const savedPass = localStorage.getItem("saved_password");
             if (savedPass) {
@@ -505,7 +495,62 @@
             }
         }
 
-        // ---- Publish News (with Supabase sync) ----
+        // ---- Render Directly from Supabase ----
+        async function renderNews() {
+            const feed = document.getElementById("news-feed");
+            if (!feed) return;
+
+            if (!isLoggedIn) {
+                feed.innerHTML = '<div class="empty-state">🔒 يرجى تسجيل الدخول لعرض الأخبار.</div>';
+                return;
+            }
+
+            feed.innerHTML = '<div class="empty-state">⏳ جاري تحميل الأخبار من Supabase...</div>';
+
+            try {
+                const { data: newsList, error } = await supabaseClient
+                    .from('news')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) {
+                    console.error("Supabase fetch error:", error);
+                    feed.innerHTML = `<div class="empty-state">❌ خطأ أثناء الاتصال بقاعدة البيانات: ${escapeHtml(error.message)}</div>`;
+                    return;
+                }
+
+                if (!newsList || newsList.length === 0) {
+                    feed.innerHTML = '<div class="empty-state">📭 لا توجد أخبار منشورة حتى الآن.</div>';
+                    return;
+                }
+
+                feed.innerHTML = newsList.map(article => {
+                    const safeTitle = escapeHtml(article.title);
+                    const safeContent = escapeHtml(article.content).replace(/\n/g, '<br>');
+                    const mediaHtml = article.media_url 
+                        ? `<img src="${escapeHtml(article.media_url)}" alt="صورة الخبر" class="news-media" loading="lazy" onerror="this.style.display='none'">`
+                        : '';
+                    const deleteBtn = isAdmin 
+                        ? `<button class="danger" onclick="window.deleteNews(${article.id})">🗑️ حذف</button>`
+                        : '';
+                    return `
+                        <article class="news-card">
+                            <h2>${safeTitle}</h2>
+                            <div class="news-meta">📅 ${escapeHtml(article.date)}</div>
+                            ${mediaHtml}
+                            <p>${safeContent}</p>
+                            ${deleteBtn}
+                        </article>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error("Render exception:", err);
+                feed.innerHTML = `<div class="empty-state">❌ حدث خطأ غير متوقع: ${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        // ---- Publish Directly to Supabase ----
         async function publishNews() {
             if (!isAdmin) return;
 
@@ -528,34 +573,33 @@
 
             let mediaUrl = null;
 
-            // Upload file if selected
+            // 1. Upload File to Supabase Storage
             if (mediaInput.files.length > 0) {
                 const file = mediaInput.files[0];
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}.${fileExt}`;
-                const filePath = `public/${fileName}`;
 
                 try {
                     const { data, error } = await supabaseClient.storage
                         .from(BUCKET_NAME)
-                        .upload(filePath, file);
+                        .upload(fileName, file);
 
                     if (error) {
-                        console.error("Supabase Upload Error:", error);
-                        alert("⚠️ فشل رفع الملف. تأكد من أن bucket 'uploads' موجود.");
+                        console.error("Supabase Storage Error:", error);
+                        alert(`⚠️ فشل رفع الصورة: ${error.message}`);
                     } else {
                         const { data: publicUrlData } = supabaseClient.storage
                             .from(BUCKET_NAME)
-                            .getPublicUrl(filePath);
+                            .getPublicUrl(fileName);
                         mediaUrl = publicUrlData.publicUrl;
                     }
                 } catch (err) {
                     console.error("Upload exception:", err);
-                    alert("⚠️ حدث خطأ أثناء الرفع.");
+                    alert("⚠️ حدث خطأ أثناء رفع الملف.");
                 }
             }
 
-            // Build date string
+            // 2. Prepare Date Format
             let publishDate;
             if (dateInput.value) {
                 const d = new Date(dateInput.value);
@@ -570,176 +614,75 @@
                 });
             }
 
-            // تخزين في localStorage (محلي)
-            const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
-            const newArticle = {
-                id: Date.now(),
-                title: title,
-                content: content,
-                date: publishDate,
-                mediaUrl: mediaUrl
-            };
-
-            newsList.unshift(newArticle);
-            localStorage.setItem("newsArticles", JSON.stringify(newsList));
-
-            // مزامنة مع Supabase (جدول news)
+            // 3. Insert Record to Supabase
             try {
+                const newId = Date.now();
                 const { error } = await supabaseClient
                     .from('news')
                     .insert([{
-                        id: newArticle.id,
+                        id: newId,
                         title: title,
                         content: content,
                         date: publishDate,
                         media_url: mediaUrl
                     }]);
-                if (error) console.error("Supabase insert error:", error);
+
+                if (error) {
+                    console.error("Supabase Insert Error:", error);
+                    alert(`❌ فشل حفظ الخبر في Supabase: ${error.message}`);
+                } else {
+                    titleInput.value = "";
+                    contentInput.value = "";
+                    dateInput.value = "";
+                    mediaInput.value = "";
+                }
             } catch (e) {
-                console.error("Supabase insert exception:", e);
+                console.error("Supabase Insert Exception:", e);
+                alert("❌ حدث خطأ غير متوقع أثناء إضافة الخبر.");
             }
 
-            // Clear form
-            titleInput.value = "";
-            contentInput.value = "";
-            dateInput.value = "";
-            mediaInput.value = "";
             publishBtn.innerText = "نشر الخبر";
             publishBtn.disabled = false;
 
             renderNews();
         }
 
-        // ---- Delete News (with Supabase sync) ----
+        // ---- Delete Directly from Supabase ----
         async function deleteNews(id) {
             if (!isAdmin) return;
             if (!confirm("هل أنت متأكد من حذف هذا الخبر؟")) return;
 
-            let newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
-            newsList = newsList.filter(article => article.id !== id);
-            localStorage.setItem("newsArticles", JSON.stringify(newsList));
-
-            // حذف من Supabase
             try {
                 const { error } = await supabaseClient
                     .from('news')
                     .delete()
                     .eq('id', id);
-                if (error) console.error("Supabase delete error:", error);
-            } catch (e) {
-                console.error("Supabase delete exception:", e);
-            }
-
-            renderNews();
-        }
-
-        // ---- تحميل الأخبار من Supabase ودمجها مع localStorage ----
-        async function syncNewsFromSupabase() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('news')
-                    .select('*')
-                    .order('id', { ascending: false });
 
                 if (error) {
-                    console.error("Supabase select error:", error);
-                    return;
-                }
-
-                if (data && data.length > 0) {
-                    // تحويل data إلى صيغة متوافقة مع localStorage
-                    const remoteNews = data.map(item => ({
-                        id: item.id,
-                        title: item.title,
-                        content: item.content,
-                        date: item.date,
-                        mediaUrl: item.media_url
-                    }));
-
-                    // دمج مع localStorage (تفادي التكرار)
-                    let localNews = JSON.parse(localStorage.getItem("newsArticles") || "[]");
-                    // إنشاء خريطة بالأخبار المحلية حسب id
-                    const localMap = new Map();
-                    localNews.forEach(article => localMap.set(article.id, article));
-
-                    // إضافة الأخبار البعيدة إن لم تكن موجودة محلياً
-                    remoteNews.forEach(remoteArticle => {
-                        if (!localMap.has(remoteArticle.id)) {
-                            localNews.push(remoteArticle);
-                        } else {
-                            // تحديث المحلي بالبعيد (في حال تغير)
-                            localMap.set(remoteArticle.id, remoteArticle);
-                        }
-                    });
-
-                    // إعادة بناء المصفوفة من الخريطة (لضمان التحديث)
-                    const merged = Array.from(localMap.values());
-                    // ترتيب تنازلي حسب id (الأحدث أولاً)
-                    merged.sort((a, b) => b.id - a.id);
-                    localStorage.setItem("newsArticles", JSON.stringify(merged));
+                    console.error("Supabase Delete Error:", error);
+                    alert(`❌ فشل حذف الخبر: ${error.message}`);
                 }
             } catch (e) {
-                console.error("Sync error:", e);
+                console.error("Supabase Delete Exception:", e);
+                alert("❌ حدث خطأ أثناء عملية الحذف.");
             }
+
             renderNews();
         }
 
-        // ---- Render News Feed ----
-        function renderNews() {
-            const feed = document.getElementById("news-feed");
-            if (!feed) return;
-
-            if (!isLoggedIn) {
-                feed.innerHTML = '<div class="empty-state">🔒 يرجى تسجيل الدخول لعرض الأخبار.</div>';
-                return;
-            }
-
-            const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
-
-            if (newsList.length === 0) {
-                feed.innerHTML = '<div class="empty-state">📭 لا توجد أخبار منشورة حتى الآن.</div>';
-                return;
-            }
-
-            feed.innerHTML = newsList.map(article => {
-                const safeTitle = escapeHtml(article.title);
-                const safeContent = escapeHtml(article.content).replace(/\n/g, '<br>');
-                const mediaHtml = article.mediaUrl 
-                    ? `<img src="${escapeHtml(article.mediaUrl)}" alt="صورة الخبر" class="news-media" loading="lazy" onerror="this.style.display='none'">`
-                    : '';
-                const deleteBtn = isAdmin 
-                    ? `<button class="danger" onclick="window.deleteNews(${article.id})">🗑️ حذف</button>`
-                    : '';
-                return `
-                    <article class="news-card">
-                        <h2>${safeTitle}</h2>
-                        <div class="news-meta">📅 ${escapeHtml(article.date)}</div>
-                        ${mediaHtml}
-                        <p>${safeContent}</p>
-                        ${deleteBtn}
-                    </article>
-                `;
-            }).join('');
-        }
-
-        // ---- Initialize ----
-        document.addEventListener("DOMContentLoaded", async function() {
+        document.addEventListener("DOMContentLoaded", function() {
             checkSavedLogin();
-            // مزامنة مع Supabase عند التحميل
-            await syncNewsFromSupabase();
             renderNews();
         });
 
-        // ---- Expose functions to global scope ----
         window.toggleLoginForm = toggleLoginForm;
         window.handleLogin = handleLogin;
         window.togglePasswordVisibility = togglePasswordVisibility;
         window.publishNews = publishNews;
         window.deleteNews = deleteNews;
         window.renderNews = renderNews;
-        window.syncNewsFromSupabase = syncNewsFromSupabase;
 
-    })(); // End of IIFE
+    })();
 </script>
 
 </body>
