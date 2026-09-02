@@ -308,17 +308,17 @@
     <header>
         <div class="header-left">
             <img src="Gemini_Generated_Image_m9ale3m9ale3m9al.png" alt="Bee Logo" class="header-logo" onerror="this.style.display='none'">
-            <h1>تحديثات عمليات</h1>
+            <h1>تحديث عمليات</h1>
         </div>
         <div class="controls">
             <button id="auth-btn" type="button" onclick="window.toggleLoginForm()">تسجيل الدخول</button>
         </div>
     </header>
 
-    <div id="success-message">✅ تم تسجيل الدخول بنجاح</div>
+    <div id="success-message"> تم تسجيل الدخول بنجاح ل قائمة تحديثات حسين شريف شكري شريف </div>
 
     <div id="login-box" class="admin-box">
-        <h3>🔐 تسجيل الدخول</h3>
+        <h3> تسجيل الدخول</h3>
         <form id="login-form" onsubmit="window.handleLogin(event)">
             <input type="text" name="username" value="user" autocomplete="username" style="display:none;">
             <div class="login-row">
@@ -338,18 +338,18 @@
                 <span>تذكرني (حفظ كلمة المرور)</span>
             </label>
         </form>
-        <div id="error-msg" class="error-msg">❌ كلمة المرور غير صحيحة</div>
+        <div id="error-msg" class="error-msg"> كلمة المرور غير صحيحة</div>
     </div>
 
     <div id="publish-panel" class="admin-box">
-        <h3>📢 نشر خبر جديد</h3>
+        <h3> نشر خبر جديد</h3>
         <input type="text" id="news-title" placeholder="عنوان الخبر">
         <textarea id="news-content" rows="4" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
         
-        <label class="input-label" for="news-media">🖼️ إرفاق صورة (اختياري - تخزين Supabase):</label>
+        <label class="input-label" for="news-media"> إرفاق صورة (اختياري - تخزين Supabase):</label>
         <input type="file" id="news-media" accept="image/*">
 
-        <label class="input-label" for="news-date">📅 تاريخ ووقت النشر (اختياري):</label>
+        <label class="input-label" for="news-date">تاريخ ووقت النشر (اختياري):</label>
         <input type="datetime-local" id="news-date">
 
         <button type="button" id="publish-btn" onclick="window.publishNews()">نشر الخبر</button>
