@@ -76,7 +76,7 @@
         }
 
         h1 {
-            font-size: 1.25rem;
+            font-size: 2.25rem;
             font-weight: 700;
             margin: 0;
             color: var(--text);
@@ -243,13 +243,13 @@
         .news-card h2 {
             margin-top: 0;
             margin-bottom: 6px;
-            font-size: 1.15rem;
+            font-size: 3.15rem;
             color: var(--accent);
             line-height: 1.4;
         }
 
         .news-meta {
-            font-size: 0.8rem;
+            font-size: 3.8rem;
             color: var(--meta-text);
             margin-bottom: 12px;
         }
@@ -257,7 +257,7 @@
         .news-card p {
             margin: 0 0 12px 0;
             line-height: 1.6;
-            font-size: 0.95rem;
+            font-size: 3.95rem;
             color: #e0dad0;
         }
 
@@ -520,7 +520,7 @@
                 return;
             }
 
-            publishBtn.innerText = "⏳ جاري النشر...";
+            publishBtn.innerText = " جاري النشر...";
             publishBtn.disabled = true;
 
             let mediaUrl = null;
@@ -539,7 +539,7 @@
 
                     if (error) {
                         console.error("Supabase Upload Error:", error);
-                        alert("⚠️ فشل رفع الملف. تأكد من أن bucket 'uploads' موجود.");
+                        alert(" فشل رفع الملف. تأكد من أن bucket 'uploads' موجود.");
                     } else {
                         const { data: publicUrlData } = supabaseClient.storage
                             .from(BUCKET_NAME)
@@ -548,7 +548,7 @@
                     }
                 } catch (err) {
                     console.error("Upload exception:", err);
-                    alert("⚠️ حدث خطأ أثناء الرفع.");
+                    alert(" حدث خطأ أثناء الرفع.");
                 }
             }
 
@@ -608,14 +608,14 @@
             if (!feed) return;
 
             if (!isLoggedIn) {
-                feed.innerHTML = '<div class="empty-state">🔒 يرجى تسجيل الدخول لعرض الأخبار.</div>';
+                feed.innerHTML = '<div class="empty-state"> يرجى تسجيل الدخول لعرض تحديثاتك.</div>';
                 return;
             }
 
             const newsList = JSON.parse(localStorage.getItem("newsArticles") || "[]");
 
             if (newsList.length === 0) {
-                feed.innerHTML = '<div class="empty-state">📭 لا توجد أخبار منشورة حتى الآن.</div>';
+                feed.innerHTML = '<div class="empty-state"> لا توجد أخبار منشورة حتى الآن.</div>';
                 return;
             }
 
@@ -631,7 +631,7 @@
                 return `
                     <article class="news-card">
                         <h2>${safeTitle}</h2>
-                        <div class="news-meta">📅 ${escapeHtml(article.date)}</div>
+                        <div class="news-meta"> ${escapeHtml(article.date)}</div>
                         ${mediaHtml}
                         <p>${safeContent}</p>
                         ${deleteBtn}
