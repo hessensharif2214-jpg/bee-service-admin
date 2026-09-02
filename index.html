@@ -244,13 +244,13 @@
         .news-card h2 {
             margin-top: 0;
             margin-bottom: 6px;
-            font-size: 1.25rem;
+            font-size: 2.25rem;
             color: var(--accent);
             line-height: 1.4;
         }
 
         .news-meta {
-            font-size: 0.8rem;
+            font-size: 1.8rem;
             color: var(--meta-text);
             margin-bottom: 12px;
         }
@@ -316,10 +316,10 @@
         </div>
     </header>
 
-    <div id="success-message">✅ تم تسجيل الدخول بنجاح</div>
+    <div id="success-message"> تم تسجيل الدخول بنجاح لصفحة تحديثالت حسين شريف شكري شريف</div>
 
     <div id="login-box" class="admin-box">
-        <h3>🔐 تسجيل الدخول</h3>
+        <h3> تسجيل الدخول</h3>
         <form id="login-form" onsubmit="window.handleLogin(event)">
             <input type="text" name="username" value="user" autocomplete="username" style="display:none;">
             <div class="login-row">
@@ -339,7 +339,7 @@
                 <span>تذكرني (حفظ كلمة المرور)</span>
             </label>
         </form>
-        <div id="error-msg" class="error-msg">❌ كلمة المرور غير صحيحة</div>
+        <div id="error-msg" class="error-msg"> كلمة المرور غير صحيحة</div>
     </div>
 
     <div id="publish-panel" class="admin-box">
@@ -347,10 +347,10 @@
         <input type="text" id="news-title" placeholder="عنوان الخبر">
         <textarea id="news-content" rows="4" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
         
-        <label class="input-label" for="news-media">🖼️ إرفاق صورة (اختياري - تخزين Supabase):</label>
+        <label class="input-label" for="news-media"> إرفاق صورة (اختياري - تخزين Supabase):</label>
         <input type="file" id="news-media" accept="image/*">
 
-        <label class="input-label" for="news-date">📅 تاريخ ووقت النشر (اختياري):</label>
+        <label class="input-label" for="news-date"> تاريخ ووقت النشر (اختياري):</label>
         <input type="datetime-local" id="news-date">
 
         <button type="button" id="publish-btn" onclick="window.publishNews()">نشر الخبر</button>
@@ -501,11 +501,11 @@
             if (!feed) return;
 
             if (!isLoggedIn) {
-                feed.innerHTML = '<div class="empty-state">🔒 يرجى تسجيل الدخول لعرض الأخبار.</div>';
+                feed.innerHTML = '<div class="empty-state"> يرجى تسجيل الدخول لعرض تحديثاتك.</div>';
                 return;
             }
 
-            feed.innerHTML = '<div class="empty-state">⏳ جاري تحميل الأخبار من Supabase...</div>';
+            feed.innerHTML = '<div class="empty-state"> جاري تحميل التحديثات  </div>';
 
             try {
                 const { data: newsList, error } = await supabaseClient
@@ -515,12 +515,12 @@
 
                 if (error) {
                     console.error("Supabase fetch error:", error);
-                    feed.innerHTML = `<div class="empty-state">❌ خطأ أثناء الاتصال بقاعدة البيانات: ${escapeHtml(error.message)}</div>`;
+                    feed.innerHTML = `<div class="empty-state"> خطأ أثناء الاتصال بقاعدة البيانات: ${escapeHtml(error.message)}</div>`;
                     return;
                 }
 
                 if (!newsList || newsList.length === 0) {
-                    feed.innerHTML = '<div class="empty-state">📭 لا توجد أخبار منشورة حتى الآن.</div>';
+                    feed.innerHTML = '<div class="empty-state"> لا توجد أخبار منشورة حتى الآن.</div>';
                     return;
                 }
 
@@ -536,7 +536,7 @@
                     return `
                         <article class="news-card">
                             <h2>${safeTitle}</h2>
-                            <div class="news-meta">📅 ${escapeHtml(article.date)}</div>
+                            <div class="news-meta"> ${escapeHtml(article.date)}</div>
                             ${mediaHtml}
                             <p>${safeContent}</p>
                             ${deleteBtn}
@@ -546,7 +546,7 @@
 
             } catch (err) {
                 console.error("Render exception:", err);
-                feed.innerHTML = `<div class="empty-state">❌ حدث خطأ غير متوقع: ${escapeHtml(err.message)}</div>`;
+                feed.innerHTML = `<div class="empty-state"> حدث خطأ غير متوقع: ${escapeHtml(err.message)}</div>`;
             }
         }
 
@@ -568,7 +568,7 @@
                 return;
             }
 
-            publishBtn.innerText = "⏳ جاري النشر...";
+            publishBtn.innerText = " جاري النشر...";
             publishBtn.disabled = true;
 
             let mediaUrl = null;
@@ -586,7 +586,7 @@
 
                     if (error) {
                         console.error("Supabase Storage Error:", error);
-                        alert(`⚠️ فشل رفع الصورة: ${error.message}`);
+                        alert(` فشل رفع الصورة: ${error.message}`);
                     } else {
                         const { data: publicUrlData } = supabaseClient.storage
                             .from(BUCKET_NAME)
@@ -595,7 +595,7 @@
                     }
                 } catch (err) {
                     console.error("Upload exception:", err);
-                    alert("⚠️ حدث خطأ أثناء رفع الملف.");
+                    alert(" حدث خطأ أثناء رفع الملف.");
                 }
             }
 
@@ -629,7 +629,7 @@
 
                 if (error) {
                     console.error("Supabase Insert Error:", error);
-                    alert(`❌ فشل حفظ الخبر في Supabase: ${error.message}`);
+                    alert(` فشل حفظ الخبر في Supabase: ${error.message}`);
                 } else {
                     titleInput.value = "";
                     contentInput.value = "";
@@ -638,7 +638,7 @@
                 }
             } catch (e) {
                 console.error("Supabase Insert Exception:", e);
-                alert("❌ حدث خطأ غير متوقع أثناء إضافة الخبر.");
+                alert(" حدث خطأ غير متوقع أثناء إضافة الخبر.");
             }
 
             publishBtn.innerText = "نشر الخبر";
@@ -660,11 +660,11 @@
 
                 if (error) {
                     console.error("Supabase Delete Error:", error);
-                    alert(`❌ فشل حذف الخبر: ${error.message}`);
+                    alert(` فشل حذف الخبر: ${error.message}`);
                 }
             } catch (e) {
                 console.error("Supabase Delete Exception:", e);
-                alert("❌ حدث خطأ أثناء عملية الحذف.");
+                alert(" حدث خطأ أثناء عملية الحذف.");
             }
 
             renderNews();
